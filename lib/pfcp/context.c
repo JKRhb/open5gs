@@ -27,19 +27,23 @@ static int context_initialized = 0;
 static OGS_POOL(ogs_pfcp_node_pool, ogs_pfcp_node_t);
 
 static OGS_POOL(ogs_pfcp_sess_pool, ogs_pfcp_sess_t);
-static OGS_POOL(ogs_pfcp_pdr_pool, ogs_pfcp_pdr_t);
-static OGS_POOL(ogs_pfcp_pdr_teid_pool, ogs_pool_id_t);
 static OGS_POOL(ogs_pfcp_far_pool, ogs_pfcp_far_t);
 static OGS_POOL(ogs_pfcp_urr_pool, ogs_pfcp_urr_t);
 static OGS_POOL(ogs_pfcp_qer_pool, ogs_pfcp_qer_t);
 static OGS_POOL(ogs_pfcp_bar_pool, ogs_pfcp_bar_t);
 
+static OGS_POOL(ogs_pfcp_pdr_pool, ogs_pfcp_pdr_t);
+static OGS_POOL(ogs_pfcp_pdr_teid_pool, ogs_pool_id_t);
+static ogs_pool_id_t *pdr_random_to_teid;
+
+static OGS_POOL(ogs_pfcp_rule_pool, ogs_pfcp_rule_t);
+
 static OGS_POOL(ogs_pfcp_dev_pool, ogs_pfcp_dev_t);
 static OGS_POOL(ogs_pfcp_subnet_pool, ogs_pfcp_subnet_t);
-static OGS_POOL(ogs_pfcp_rule_pool, ogs_pfcp_rule_t);
 
 void ogs_pfcp_context_init(void)
 {
+    int i;
     ogs_assert(context_initialized == 0);
 
     /* Initialize SMF context */
@@ -53,11 +57,6 @@ void ogs_pfcp_context_init(void)
 
     ogs_pool_init(&ogs_pfcp_sess_pool, ogs_app()->pool.sess);
 
-    ogs_pool_init(&ogs_pfcp_pdr_pool,
-            ogs_app()->pool.sess * OGS_MAX_NUM_OF_PDR);
-    ogs_pool_init(&ogs_pfcp_pdr_teid_pool,
-            ogs_app()->pool.sess * OGS_MAX_NUM_OF_PDR);
-    ogs_pool_random_id_generate(&ogs_pfcp_pdr_teid_pool);
     ogs_pool_init(&ogs_pfcp_far_pool,
             ogs_app()->pool.sess * OGS_MAX_NUM_OF_FAR);
     ogs_pool_init(&ogs_pfcp_urr_pool,
@@ -66,6 +65,17 @@ void ogs_pfcp_context_init(void)
             ogs_app()->pool.sess * OGS_MAX_NUM_OF_QER);
     ogs_pool_init(&ogs_pfcp_bar_pool,
             ogs_app()->pool.sess * OGS_MAX_NUM_OF_BAR);
+
+    ogs_pool_init(&ogs_pfcp_pdr_pool,
+            ogs_app()->pool.sess * OGS_MAX_NUM_OF_PDR);
+    ogs_pool_init(&ogs_pfcp_pdr_teid_pool, ogs_pfcp_pdr_pool.size);
+    ogs_pool_random_id_generate(&ogs_pfcp_pdr_teid_pool);
+
+    pdr_random_to_teid = ogs_calloc(
+            sizeof(ogs_pool_id_t), ogs_pfcp_pdr_pool.size);
+    ogs_assert(pdr_random_to_teid);
+    for (i = 0; i < ogs_pfcp_pdr_pool.size; i++)
+        pdr_random_to_teid[ogs_pfcp_pdr_teid_pool.array[i]] = i;
 
     ogs_pool_init(&ogs_pfcp_rule_pool,
             ogs_app()->pool.sess *
@@ -102,9 +112,11 @@ void ogs_pfcp_context_final(void)
     ogs_pool_final(&ogs_pfcp_subnet_pool);
     ogs_pool_final(&ogs_pfcp_rule_pool);
 
-    ogs_pool_final(&ogs_pfcp_sess_pool);
     ogs_pool_final(&ogs_pfcp_pdr_pool);
     ogs_pool_final(&ogs_pfcp_pdr_teid_pool);
+    ogs_free(pdr_random_to_teid);
+
+    ogs_pool_final(&ogs_pfcp_sess_pool);
     ogs_pool_final(&ogs_pfcp_far_pool);
     ogs_pool_final(&ogs_pfcp_urr_pool);
     ogs_pool_final(&ogs_pfcp_qer_pool);
