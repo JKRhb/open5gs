@@ -412,7 +412,7 @@ void smf_pfcp_state_exception(ogs_fsm_t *s, smf_event_t *e)
 static void reselect_upf(ogs_pfcp_node_t *node)
 {
     int r;
-    smf_ue_t *smf_ue = NULL, *next_ue = NULL;;
+    smf_ue_t *smf_ue = NULL;
     ogs_pfcp_node_t *iter = NULL;
 
     ogs_assert(node);
@@ -434,11 +434,11 @@ static void reselect_upf(ogs_pfcp_node_t *node)
         return;
     }
 
-    ogs_list_for_each_safe(&smf_self()->smf_ue_list, next_ue, smf_ue) {
-        smf_sess_t *sess = NULL, *next_sess = NULL;;
+    ogs_list_for_each(&smf_self()->smf_ue_list, smf_ue) {
+        smf_sess_t *sess = NULL;
         ogs_assert(smf_ue);
 
-        ogs_list_for_each_safe(&smf_ue->sess_list, next_sess, sess) {
+        ogs_list_for_each(&smf_ue->sess_list, sess) {
             ogs_assert(sess);
             if (sess->epc) {
                 ogs_error("[%s:%s] EPC restoration is not implemented",
