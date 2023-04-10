@@ -35,8 +35,7 @@ int smf_pfcp_send_modify_list(
             uint8_t type, smf_sess_t *sess, ogs_pfcp_xact_t *xact),
         ogs_pfcp_xact_t *xact, ogs_time_t duration);
 
-int smf_5gc_pfcp_send_session_establishment_request(
-        smf_sess_t *sess, ogs_sbi_stream_t *stream);
+int smf_5gc_pfcp_send_session_establishment_request(smf_sess_t *sess);
 int smf_5gc_pfcp_send_all_pdr_modification_request(
         smf_sess_t *sess, ogs_sbi_stream_t *stream,
         uint64_t flags, ogs_time_t duration);

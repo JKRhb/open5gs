@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 by Sukchan Lee <acetcom@gmail.com>
+ * Copyright (C) 2019-2023 by Sukchan Lee <acetcom@gmail.com>
  *
  * This file is part of Open5GS.
  *
@@ -148,8 +148,6 @@ uint8_t smf_5gc_n4_handle_session_establishment_response(
 {
     int i;
 
-    ogs_sbi_stream_t *stream = NULL;
-
     uint8_t cause_value = OGS_PFCP_CAUSE_REQUEST_ACCEPTED;
     uint8_t offending_ie_value = 0;
 
@@ -163,9 +161,6 @@ uint8_t smf_5gc_n4_handle_session_establishment_response(
     ogs_assert(rsp);
 
     ogs_debug("Session Establishment Response [5gc]");
-
-    stream = xact->assoc_stream;
-    ogs_assert(stream);
 
     ogs_pfcp_xact_commit(xact);
 

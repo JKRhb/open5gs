@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 by Sukchan Lee <acetcom@gmail.com>
+ * Copyright (C) 2019-2023 by Sukchan Lee <acetcom@gmail.com>
  *
  * This file is part of Open5GS.
  *
@@ -361,8 +361,7 @@ int smf_pfcp_send_modify_list(
     }
 }
 
-int smf_5gc_pfcp_send_session_establishment_request(
-        smf_sess_t *sess, ogs_sbi_stream_t *stream)
+int smf_5gc_pfcp_send_session_establishment_request(smf_sess_t *sess)
 {
     int rv;
     ogs_pkbuf_t *n4buf = NULL;
@@ -370,7 +369,6 @@ int smf_5gc_pfcp_send_session_establishment_request(
     ogs_pfcp_xact_t *xact = NULL;
 
     ogs_assert(sess);
-    ogs_assert(stream);
 
     xact = ogs_pfcp_xact_local_create(sess->pfcp_node, sess_5gc_timeout, sess);
     if (!xact) {
@@ -378,7 +376,6 @@ int smf_5gc_pfcp_send_session_establishment_request(
         return OGS_ERROR;
     }
 
-    xact->assoc_stream = stream;
     xact->local_seid = sess->smf_n4_seid;
 
     memset(&h, 0, sizeof(ogs_pfcp_header_t));
