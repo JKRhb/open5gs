@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2023 by Sukchan Lee <acetcom@gmail.com>
+ * Copyright (C) 2019 by Sukchan Lee <acetcom@gmail.com>
  *
  * This file is part of Open5GS.
  *
@@ -631,7 +631,12 @@ ED5(uint8_t     spare1:4;,
     uint8_t     ipv6:1;,
     uint8_t     ipv4:1;)
     union {
-        uint8_t choose_id;
+        struct {
+        ED4(uint8_t choose_id;,
+            uint8_t spare2;,
+            uint8_t spare3;,
+            uint8_t spare4;)
+        };
         struct {
             uint32_t teid;
             union {
