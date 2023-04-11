@@ -402,7 +402,8 @@ void ogs_pfcp_build_create_pdr(
 
     if (pdr->f_teid_len) {
         memcpy(&pdrbuf[i].f_teid, &pdr->f_teid, pdr->f_teid_len);
-        pdrbuf[i].f_teid.teid = htobe32(pdr->f_teid.teid);
+        if (pdr->f_teid.ch == 0)
+            pdrbuf[i].f_teid.teid = htobe32(pdr->f_teid.teid);
 
         message->pdi.local_f_teid.presence = 1;
         message->pdi.local_f_teid.data = &pdrbuf[i].f_teid;
@@ -449,7 +450,8 @@ bool ogs_pfcp_build_created_pdr(
     if (ogs_pfcp_self()->up_function_features.ftup) {
         if (pdr->f_teid_len) {
             memcpy(&pdrbuf[i].f_teid, &pdr->f_teid, pdr->f_teid_len);
-            pdrbuf[i].f_teid.teid = htobe32(pdr->f_teid.teid);
+            if (pdr->f_teid.ch == 0)
+                pdrbuf[i].f_teid.teid = htobe32(pdr->f_teid.teid);
 
             message->local_f_teid.presence = 1;
             message->local_f_teid.data = &pdrbuf[i].f_teid;
@@ -517,7 +519,8 @@ void ogs_pfcp_build_update_pdr(
 
     if (pdr->f_teid_len) {
         memcpy(&pdrbuf[i].f_teid, &pdr->f_teid, pdr->f_teid_len);
-        pdrbuf[i].f_teid.teid = htobe32(pdr->f_teid.teid);
+        if (pdr->f_teid.ch == 0)
+            pdrbuf[i].f_teid.teid = htobe32(pdr->f_teid.teid);
 
         message->pdi.local_f_teid.presence = 1;
         message->pdi.local_f_teid.data = &pdrbuf[i].f_teid;
